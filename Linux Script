@@ -1,0 +1,160 @@
+#!/bin/bash
+# Nataliya Kizyuk C1473791 DT211C/2
+# 21/11/2015 
+#
+# Script which will allow a user to perform the following list of #administrative functions
+#
+# while loop to repeat the program until the 'k'/exit option inputed
+
+while :
+do
+
+clear
+
+# function to return to the menu when user press ENTER
+
+enter()
+{ 
+echo "Press ENTER to proceed to the MENU"; 
+read
+return
+} 
+
+# the menu of options from a to k will be displayed to user
+
+echo " ______________________________________________________________"
+echo "|                                          " 	      
+echo "|    	   ADMINISTRATIVE FUNCTIONS MENU:            "
+echo "|______________________________________________________________"
+echo "|       					              "
+echo "| (a) Show username, date and time                    "
+echo "| (b) Use 'vi' to edit file	     	            "
+echo "| (c) Show your current shell, home directory, and      "  
+echo "|     operating system type                             "
+echo "| (d) Show your current path setting and current        " 
+echo "|     working directory                                 "
+echo "| (e) Show the number of users currently logged         "
+echo "| (f) Show the OS version, release number, and 	 "
+echo "|     kernel version.                                   "
+echo "| (g) Show the CPU information, processor model name,   "
+echo "|     speed, uptime                                     "
+echo "| (h) Display all the directories in PATH               "
+echo "| (i) Display the information from the ls -l"            
+echo "|     Select the   directory"                            
+echo "| (j) Show a summary of the disk space usage for each  "
+echo "|     directory                                        "
+echo "| (k) Exit/Stop                                        "
+echo "|______________________________________________________________"
+echo -n "Enter your menu choice [a-k]: " 
+# command to read the users response
+read response
+
+
+case $response in
+a) echo "You chose Option a"
+#
+# (a)To display username, date and time.
+#
+echo "User name: $USER"
+echo -e "Date and time: $(date)  "
+echo "Calendar: $(cal) " 
+#calling function enter to go back to the menu
+enter ;;
+b)echo "You chose Option b"
+#
+# (b)To open file inputed from user in vi editor.
+#
+read -p "Enter File Name:" myfile
+if  [ -z $myfile ]
+then
+	echo "File name missing"
+	enter
+else 
+	vi "$myfile" 
+	enter
+fi ;;
+c) echo "You chose Option c"
+#
+# (c)To show your current shell, home directory, and operating 
+#    system type.
+echo "Current shell:  $SHELL"
+echo "Home directory: $HOME"
+echo "Os type:        $OSTYPE" 
+enter ;;
+d) echo "You chose Option d"
+#
+# (d)Show your current path setting and current working 
+#    directory
+echo "Current path: $PATH:."  
+echo "Current working directory: $(pwd -P)" 
+enter ;;
+e) echo "You chose Option e"
+#
+# (e)Show the number of users currently logged.
+#
+echo -e "Users currently logged: \c"; users
+echo -e "Number of users login: \c";  who | wc -l 
+enter ;;
+f) echo "You chose Option f"
+#
+# (f)Show the OS version, release number, and kernel version.
+#
+echo -e " OS version: $(uname -o) \n Release number: $(uname -r) \n Kernel version $(uname -v)" 
+enter ;;
+g) echo "You chose Option g"
+#
+# (g)Show the CPU information, processor model name, speed, 
+#    uptime.
+#
+echo " CPU information: "
+echo " Processor model name:$(cat /proc/cpuinfo | grep -i processor | uniq)"
+echo " Speed:$(cat /proc/cpuinfo | grep -i mhz | uniq)"
+echo " Uptime:$(uptime)" 
+enter ;;
+h) echo "You chose Option h"
+#
+# (h) Display all the directories in PATH.
+#  
+echo -e "Directories in PATH:  \n $(env | grep PATH)" 
+# echo "Directories in PATH: $(ls -h) "
+# echo "Directories in PATH: $(ls -C) "
+enter ;;
+i) echo "You chose Option i"
+#
+# (i) Display the information from the ls -l. Select the 
+#     directory  
+echo "Iinformation from the ls -l: $(ls -lh)"
+#This will read users directory
+read -p "Enter name of directory:" mydir
+# to find directory selected by user
+# if no argument given
+if test -z $mydir 
+then
+	echo "Directory name missing"
+	enter
+else
+	ls -l $mydir 
+	enter
+fi ;;
+j) echo "You chose Option j"
+#
+# Show a summary of the disk space usage for each directory
+#
+echo "Summary of the disk space usage for each directory: $(du -sh)"
+#The command du summarizes disk usage of each directory
+#-h is to get the numbers "human readable and s for summary
+echo "$(du -h --max-depth=1)"
+#the option --max-depth=1 instructs du to list only first #level of directories and their sizes 
+enter ;;
+k) echo "You enter 'k' for EXIT"
+exit 0 ;;
+# options input error checking
+*) echo "The option &response is not available!!! " 
+echo "Please select choice a,b,c,d,e,f,g,h,i,j, or k";
+enter ;;
+esac
+
+done
+
+
+
