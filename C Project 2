@@ -1,0 +1,422 @@
+
+/*      author: Nataliya Kizyuk
+         date: 25/02/2015
+         Program will perform security authorisation based on access code: enter code, encrypt code and verify if code is correct, and decrypt code.
+        The code is  4 single - digit integer numbers between 0 - 9. 
+*/
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<conio.h> // header for clrscr();
+#include<ctype.h> // header needed for isdigit(char)
+#define SIZE 4    //declaring constant(global) variable
+
+//prototypes (pass parameters by reference)
+void enter_code(int[]); 
+int encrypt_code(int[], int*, int*);
+int compare_code(int[]);
+int decrypt_code(int[]);
+void display(int*,int*);
+void exit(void);
+
+main()
+{
+  int code[SIZE]= {0}; // declaring array of integers to store inputed code 
+  int successful = 0;  // declaring counter for successful entered code
+  int incorrect = 0;  // declaring counter for unsuccessful entered code
+  int count1 = 0;     //declaring counter for executing enter code()
+  int count2 = 0;     //declaring counter for executing encrypt_code()
+  int count3 = 0;     //declaring counter for executing decrypt_code()
+  char option = 0;    //declaring char variable to store inputed option
+  int num; 
+  
+  printf(" \n                WELCOME TO SECURITY AUTHORISATION \n");
+
+  do // Start of 'do...while' that make program to run continually and re - display the menu while option 4 will be entered
+  {
+      
+        printf("\n");   //BORDERS FOR MENU SCREEN
+        printf("        _____________________________________________________________\n" ); 
+        printf("       |                                                             |\n");
+        printf("       |     MENU                                                    |\n");
+        printf("       |                                                             |\n");
+        printf("       |  1.Enter code                                               |\n");
+        printf("       |                                                             |\n");
+        printf("       |  2.Encrypt code and verify if correct                       |\n");
+        printf("       |                                                             |\n");
+        printf("       |  3.Decrypt code                                             |\n");
+        printf("       |                                                             |\n");
+        printf("       |  4.Display the number of times the code was entered         |\n");
+        printf("       |    (i) Successfully                                         |\n");
+        printf("       |    (ii) Incorrectly                                         |\n");
+        printf("       |                                                             |\n");
+        printf("       |  5.Exit Program                                             |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Please enter 1, 2, 3, 4 or 5                               |\n");
+        printf("       |                                                             |\n");
+        printf("       |_____________________________________________________________|\n");
+    
+    
+        printf(" \n   Please Key In Your Option  " );
+        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+        //if i put %1s it recognise only first digit from double digit character, e.g: 
+        // if you input 12 for option it will ignore 2 and swich program to case 1
+        flushall();
+        
+        clrscr();  // Clears the screen
+        
+        num = atoi(&option);//convert char to int to perform error checking 
+        
+        //error checking for options (checks that input is not a letter)
+        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+        {
+            //Start of 'swich case' that will switch program from one option to another
+            switch(num)
+            {
+                case 1: //when user entered option 1
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    //call function enter_code() and return value of how many times code was entered
+                    enter_code(code); 
+                    
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    count1++;  // count will show that function enter_code was called(executed)
+                    count3 = 0;// clear(initialise) counter for executing decrypt_code() to 0
+                    //to avoid repeating this error checking when a new entered cod should be decrypted
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen , if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                } //end of case 1
+    
+                case 2: //when user entered option 2
+                {
+                    if(count1 != 0) //if() to make sure that user entered the code before encryption
+                    {
+                        printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                         // call function encrypt_code which returns(1) to count2 if function was already executed
+                        count2 = encrypt_code(code, &successful, &incorrect);
+                        
+                        printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                        count1 = 0; //clear(initialise) counter for executing enter_code() to 0
+                        //to avoid repeating this error checking when a new entered cod should be encrypted
+                    }
+                    else if(count2 == 1)
+                    {
+                        printf("\n\n  The Code is already Encrypted!!!");
+                        printf("\n  Use option 3 to Decrypt your Code or option 1 to Enter a new Code!\n");
+                    }
+                    else //if count1 == 0 (if code wasn't entered)
+                    {
+                        printf("\n\n  Error!!! There is no Code entered to  Encrypt!");
+                        printf("\n  You should enter the Code first!\n");
+                    }
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                } //end of case 2
+                
+                case 3: //when user entered option 3
+                {
+                    if(count2 != 0)// if entered code was encrypted
+                    {
+                      printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                       //call function decrypt_code( ); that will return(1) to the count3
+                      count3 = decrypt_code(code);
+                        
+                      printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                      count2 = 0;// clear(initialise) count2 to 0; 
+                      //to avoid repeating this error checking when a new entered cod should be encrypted
+                    } 
+                    else if(count3 == 1)
+                    {
+                        printf("\n\n  The Code is already Decrypted!!!");
+                        printf("\n  Use option 1 to Enter  a new Code!\n");
+                    }
+                    else
+                    {   
+                       printf("\n\n  Error!!! The Code should be Encrypted first!\n");
+                    }
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 3
+                
+                case 4: // when user entered option 4
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    //call function display()
+                    display(&successful, &incorrect); 
+                    
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 4
+                
+                case 5://case 5 when user entered option 5 for exit
+                {
+                    exit();
+                    
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 5
+    
+                default://error checking: if input is not single digit it will display following: 
+                {
+                    printf("\n   There is no option %d!",num);
+                    printf("\n   Error In Input! \n");
+                    printf("\n   Please Try Again! \n");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of default
+                
+            }//end switch
+            
+        }//end of if()
+        else
+        {
+            //error checking: if input is a letter it will display following: 
+            printf("\n   There is no option %c!",option);
+            printf("\n   Error In Input!!! \n");
+            printf("\n   Please Try Again! \n");
+            
+            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+            getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+            clrscr();  // Clears the screen
+            
+        } // end of else - error checking for options
+        
+  }//end do 
+  while(num != 5); //while user entered option 5 - exit()
+  
+  getchar();
+    
+}// end main()
+
+  /*Implement enter_code( ) */
+void enter_code(int array[])
+{   
+    char str[5]= {' '};//declaration of str - array of character 
+    //and initialising it to '  '(white space)
+    int num;
+    int i;
+
+    printf("\n   Please Enter Four Single Digits of your Code between 0 - 9\n");
+    
+    for(i=0; i<SIZE; i++) //'for loop' to input code to array
+    {
+        printf("\n  %d digit - ", i+1); //display which digit to input
+        scanf("%2s",&str[i]);//reads i element to string
+        //%2s - error checking for white spaces and single digit
+        //if i put %1s it recognise only first digit from double digit character, e.g: 
+        // if you input 12 for option it will ignore 2 and swich program to case 1
+        
+        num = atoi(&str[i]); //atoi( ) converts characters of string to integer
+        
+        if(isdigit(str[i]) && num > -1 && num < 10)// isdigit()  -  is one ofcharacter-testing macro set 
+         //that checks that single character is a decimal digit: 0 - 9, not a character, e.g: 5 not a
+         //num >= 0 && num <= 9  checks that converted from char to int number is a single digit, e.g: 1 not 10
+        {                                        
+            *(array + i) = num;
+        }
+        else
+        {
+            printf("\n   ERROR!!!  Digit is out of range 0 - 9.  Try again!!! \n");  
+            i--;  //decrease i by one that allows user to enter current digit again if it was out of range
+            
+        }//end if...else()
+            
+    } //end for 
+    
+    printf("\n Entered Code is: ");
+    
+    //display contents of array[]
+    for(i=0; i<SIZE; i++) 
+    {
+        printf("  %d", *(array + i)); 
+    }  //end for()
+    
+} //end enter_code()
+
+  /* Implement  encrypt_code( ) */
+int encrypt_code(int code[], int *successfull, int *incorrect)
+{
+    int temp;// declaring of temporary variable used for swaping the elements of array
+    int check;
+    int i;
+    
+    printf("\n\n  Entered Code is:   ");
+    for(i=0; i<SIZE; i++)
+    {
+        printf("  %d", *(code + i)); //display contents of array[]
+        
+    }// end for()
+    
+    printf("\n  Encrypted Code is:  "); 
+    
+    //implement of Encryption algorithm
+    temp = code[0];  //store value of first element to temp
+    *(code + 0 )= *(code + 2);// assign value of third element to first
+    *(code + 2) = temp;//assign value of the first element that is stored in temp to third element
+       
+    temp = *(code + 1); //store value of second element to temp
+    *(code + 1) = *(code + 3); // assign value of forth element to second
+    *(code + 3) = temp;  //assign value of the second element that is stored in temp to forth element
+        
+    for(i=0; i<SIZE; i++) // for loop that increases value of array elements by 1
+    {
+        *(code + i) = *(code + i) + 1;
+            
+        if(*(code + i) == 10)//if value of element is = 10 then
+        {
+            *(code + i) = 0;//change it to 0
+            
+        } //end if()
+        
+        printf(" %d ",*(code + i));//display encrypted element
+            
+    } //end for() 
+    
+    //Call function compare_code( ), which returns - 1, if code is correct, and - 0, if code is incorrect
+    check = compare_code(code); 
+    
+    if(check == 1)
+    {        
+        (*successfull)++;  // how many times code was entered successfully
+    }
+    else
+    {
+        (*incorrect)++;    // how many times code was entered  incorrectly
+    }//end if...else()
+    
+    return(1);//encrypt_code( ) returns 1 to the main() 
+    //to let know switch() that case: 2  is already done 
+    //and can't be repeated until new code will entered 
+    
+} //end encrypt_code()
+
+/* Implement compare_code  */
+int compare_code(int code[])
+{
+    // declaration of constant array of int that stores correct code and can not be changed 
+    const int access_code[SIZE] = {4,5,2,3};
+    
+    int count = 0;
+    int i;
+    
+    for(i=0; i<SIZE; i++) //'for loop' for checking if inputed code is correct
+    {
+        //' if' function that verify that user entered correct code
+        if( *(code + i) == *(access_code + i)) 
+        {
+            count++;//counts if elements of the arrays have the same value  
+        } // end if()
+    } //end for() 
+    
+    //if...else function that will display message 'Correct Code' if variable 'count'=4; 
+    //that mean that all digits are correct, else it will display 'Error Code'
+    if ( count == 4)
+    {
+        printf("\n\n   CORRECT CODE !!!\n");
+        
+        return(1);
+        // functoin compare_code()  returns 1 to the encrypt_code( ) if entered code is correct
+    }
+    else
+    {                        
+        printf("\n\n   ERROR CODE \n");
+        printf("\n   Try Again \n");
+        
+        return(0);
+        // functoin compare_code() returns 0 to the encrypt_code( ) if entered code is incorrect
+        
+    }// end of 'if...else' that will display message    
+       
+}//end of compare_code()
+
+  /* Implement decrypt_code( ); */
+int decrypt_code(int *code)
+{
+    int temp;
+    int i;
+    
+     //implement of Decryption algorithm
+    for(i=0; i<SIZE; i++)
+    {
+        *(code + i) = *(code + i) - 1;// for loop that decreases value of array elements by 1
+            
+        if(*(code + i) == -1)  //if value of element is = -1  then
+        {
+            *(code + i) = 9;   //change it to 9
+            
+        } //end if()
+            
+    } //end for() 
+    
+    temp = code[0];  //store value of first element to temp
+    *(code + 0 )= *(code + 2);// assign value of third element to first
+    *(code + 2) = temp;//assign value of the first element that is stored in temp to third element
+       
+    temp = *(code + 1);//store value of second element to temp
+    *(code + 1) = *(code + 3);// assign value of forth element to second
+    *(code + 3) = temp;  //assign value of the second element that is stored in temp to forth element
+    
+      //displaying decrypted code 
+    printf("\n\n  Decrypted Code is:  ");     
+    for(i=0; i<SIZE; i++)
+    {
+        printf(" %d ",*(code + i));
+            
+    } //end for() 
+    
+    return(1);//decrypt_code( ) returns 1 to the main() 
+    //to let know switch() that case: 3  is already done and can't be repeated until 
+    //new code will be entered and encrypted
+    
+}// end decrypt_code( )
+
+  /* Implement display( );  */
+void display( int *successfully, int *incorrectly)
+{
+    int times_entered;
+    //calculation how many times code was entared
+    times_entered = (*successfully)+(*incorrectly);
+    
+    printf(" \n\n   The code was entered:           %d times", times_entered);
+    printf(" \n   (i) Successfully Entered code:  %d times", *successfully);
+    printf(" \n  (ii) Incorrectly  Entered code:  %d times \n",*incorrectly); 
+}//end display()
+
+  /* Implement exit( )  */
+void exit(void)
+{
+   printf("\n\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+   printf("\n\n   Thank you for using our service.\n   Press ENTER to exit the program.\n   Bye! "  );
+   printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+}//end exit()
