@@ -1,0 +1,202 @@
+__author__ = 'Nataliya Kizyuk C14737691'
+
+# date: 18/11/2015
+
+'''
+Assignment 2: GPS unit for hikers
+
+the GPS generates the current longitude and latitude - a pair of floating point numbers.
+The range of longitude is -180 degrees to +180 degrees with 0 being the meridian which passes through Grenwich, England.
+The range of latitude is -90 degrees to +90 degrees with 0 being the Equator.
+This means that values for Ireland will always be negative for longitude and positive for latitude.
+
+The program should implement this functionality:
+
+1. Set and retrieve the current location. Save the current position as a named waypoint. Call it 'CurrentLocation'
+2. Set and retrieve other user-defined waypoints".
+3. Save and retrieve named paths consisting of a sequence of waypoints.
+4. Calculate the distance to a given waypoint from the current location.
+5. Calculate the direction as a compass bearing from the current location to a given waypoint. Range is 0 <= bearing < 360.
+
+'''
+import random
+import math
+import haversine  # this module to Calculate the distance (in km or in miles) between two points on Earth
+
+
+class Waypoint(object):
+    '''
+    The class that is a waypoint and has a name, position-longitude and position-latitude
+    Create the initializer to take 4 parameters: the first is self, and the remaining three
+    are: name, longitude,latitude
+    '''
+
+    def __init__(self, name, longitude=0.0, latitude=0.0):
+        '''
+        In the initializer, assign the 3 parameters to three variables in the instance being created.
+        '''
+        self.name = name
+        self.long = longitude
+        self.lat = latitude
+        self.path = []
+
+    def __str__(self):
+        return "{}({:.2f},  {:.2f})".format(self.name, self.long, self.lat)
+
+
+    def add_waypoint(self, point):
+        '''
+        The new method called add_waypoint. It should add the values of Waipoint instances to the Path instance
+        '''
+        self.path.append(point)
+
+    def get_path(self, path_name):
+        '''
+        The method get_path takes parameter: path_name and returns a readable version of the Path instance
+        '''
+        return "{}:\t{}".format(path_name, [str(elem).strip() for elem in self.path])
+
+    def clear_path(self, starting_point):
+        '''
+        The method clear_path takes parameter: starting_point, clears path and add start_point to it
+        '''
+        self.path.clear()
+        self.path.append(starting_point)
+
+    def distance(self, other):
+        '''
+        The new method called distance. It passes the values of two Waypoint instances to haversine method that returns
+        distance in km from first Waypoint instance to Other Waipoint instance
+        and returns distance value
+        '''
+        point1 = (self.long, self.lat)
+        point2 = (other.long, other.lat)
+        dist = haversine.haversine(point1, point2)
+        return dist
+
+    def direction(self, other):
+        '''
+        The new method called direction.
+        It takes as an arguments a string of the form CurrentPosition: self.lat, self.long
+        and string OtherName: other.lat, other.long
+        and calculates the bearing according to formula:
+        y = sin(λ2-λ1) * cos(φ2)
+        x = cos(φ1)*sin(φ2) - sin(φ1)*cos(φ2)*cos(λ2-λ1)
+        brng = atan2(y, x) expressed in degrees.
+        where, λ is longitude and  φ is latitude
+        It returns bearing value
+        '''
+        y = math.sin(other.long - self.long) * math.cos(other.lat)
+        x = math.cos(self.lat)*math.sin(other.lat)-math.sin(self.lat)*math.cos(other.lat)*math.cos(other.long-self.long)
+        bearing = round((math.degrees(math.atan2(y, x)) + 360) % 360)
+        return bearing
+
+
+class Paths(object):
+    '''
+    The class that is a Paths and has an ordered collection of path.
+    '''
+    def __init__(self):
+        '''
+        Create the initializer to take 1 parameter: self, and declare list of paths: self.paths
+        :return: None
+        '''
+        self.paths = []
+
+
+    def add_path(self, path):
+        '''
+        The new method called add_path. It should add the values of Path instances to the Paths instance
+        '''
+        self.paths.append(path)
+
+
+    def output(self):
+        '''
+        The method output prints a readable and formated version of the Paths instance
+        '''
+        for element in self.paths:
+            print("\n{}".format(str(element).strip()))
+
+
+def menu():
+    '''
+    Function to show menu to the user, to get option from the user and return it to main()
+    :return: selected_option that is string
+    '''
+    print(" _____________________________________________________________________")
+    print("|  Option 1: Set and retrieve the current location.   (1)             |")
+    print("|  Option 2: Set and retrieve other user-defined waypoints.  (2)      |")
+    print("|  Option 3: Save and retrieve named paths.  (3)                      |")
+    print("|  Option 4: Calculate the distance to a waipoint.  (4)               |")
+    print("|  Option 5: Calculate the direction to a given waypoint. (5)         |")
+    print("|  Option 0: Exit the program  (0)                                    |")
+    print("|_____________________________________________________________________|")
+
+    selected_option = input(" PLEASE KEY IN YOUR OPTION: ").strip(' ')  # strip input from white spaces
+    if selected_option == '0':
+        print("\n\n\n YOU ENTERED '0' FOR EXIT !\n\n\n")
+        exit(0)
+    else:
+        return selected_option
+
+
+def main():
+    try:
+        # the method to create a reference to current location that returns a longitude/latitude pair.
+        #randomly generated start point
+        start_point = Waypoint("CurrentPosition", random.uniform(-11.0, -5.0), random.uniform(51.0, 55.0))
+        #start_point = Waypoint("CurrentPosition", 53.3478, 6.2597)
+        new_point = None
+        routes = Paths()
+        replay = 1
+        while replay == 1:  # to repeat loop until option 0/exit
+            option = menu()  #call function menu
+            if option == '1':
+                #1.to retrieve the current location.
+                print("\n",start_point)
+                start_point.add_waypoint(start_point)
+
+            elif option == '2':
+                #2. to set user-defined waypoints
+                user_point = input("\n Please enter the new point (Name, longitude, latitude): ").split(",")
+                if len(user_point) < 3: # input error checking
+                    print("Some arguments are missed!!! Please try again")
+                else:
+                    new_point = Waypoint(user_point[0], float(user_point[1]), float(user_point[2]))
+                    print("\n", new_point)
+                    start_point.add_waypoint(new_point)
+
+            elif option == '3':
+                #3.To Save and retrieve named paths.
+                path_name = input("Please enter the name of your path:")
+                routes.add_path(start_point.get_path(path_name)) #calling methods route.get_path() and routes.add_path()
+                routes.output()  #calling Paths class method routes.output()
+                start_point.clear_path(start_point) #calling Path class method route.clear_path()
+
+
+            elif option == '4':
+                # 4.To Calculate the distance to a waipoint.
+                if not new_point: # error checking if second point is given
+                    print("\n Please enter your waypoint parameters \n")
+                else:
+                    print("\nDistance from {} to the {} is:".format(start_point,new_point), end='')
+                    print("{:.3f}".format( Waypoint.distance(start_point, new_point)), " km \n")
+
+            elif option == '5':
+                # 5. To Calculate the direction to a given waypoint.
+                if not new_point: # error checking if second point is given
+                    print("\n Please enter your waypoint parameters \n")
+                else:
+                    print("\n Direction from {} to the {} is:".format(start_point,new_point), end='')
+                    print(Waypoint.direction(start_point, new_point), "Degrees as a Compass Bearing \n")
+
+            else:
+                print("\n\n\nTHE INPUT IS INVALID! NO SUCH OPTION AS:", option,
+                      "\nTRY AGAIN OR PRESS '0' FOR EXIT\n\n\n")
+    except IOError as e:
+        print(e)
+
+
+if __name__ == '__main__':
+    main()
