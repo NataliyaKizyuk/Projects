@@ -1,268 +1,192 @@
  // author: Nataliya Kizyuk 
-2 // Program that provide user with the "PAYROL TIMESHEET DATA MENU" that enable user to 1) Input Employee Data; 2)Calculate Employee Gross to Net;  
-3 // 3) Display Employee Payslip;  and 4) Display Weekly Report for each Employee 
-4 
+ // Program that provide user with the "PAYROL TIMESHEET DATA MENU" that enable user to 1) Input Employee Data; 2)Calculate Employee Gross to Net;  
+ // 3) Display Employee Payslip;  and 4) Display Weekly Report for each Employee 
  
-5 #include<iostream> 
-6 #include<fstream> 
-7 #include <string> 
-8 using namespace std; 
-9 float anumber; 
-10 
- 
-11 string firstname[5] {"Sean O Brien", "Sarah Murphy","Karen Phelan", "   Pat Kelly", "  Joe Turley" }, surname= ""; 
-12 string ppsno[5] {" 6183529G", " 1234567B", " 2345678K", " 2342345F", " 9982341G"}; 
-13 
- 
-14 float b[5]; 
-15 float gross_pay[5]; 
-16 float hours[5]; 
-17 float hourly_rate [5] = {22, 20, 22, 10, 27}; 
-18 float tax_credit [5] = {66, 65, 63, 36, 56}; 
-19 int option1; 
-20 int option2; 
-21 int exit; 
-22 float paye[5]; 
-23 float eeprsi[5];///4% 
-24 float erprsi[5];///8.5% 
-25 float total_prsi[5]; 
-26 float usc[5]; 
-27 float net_pay[5]; 
-28 float annual_income[5]; 
-30 
-31 int main() 
-32 { 
-33 
-34   int timesheet_hours[5][5]; 
-35   //creates a 9*9 matrix or a 2d array. 
-36 
-37 	for(int i=0; i<5; i++)    //This loops on the rows. 
-38 	{ 
-39 
-40 		cout << " Outer loop for employee number" <<  i +1 << endl; 
-41 		cout <<"____________________________________________________"<<endl; 
-42 
-43 		for(int j=0; j<5; j++) //This loops on the columns 
-44 		{ 
-45
-46       cout <<" Key in daily hours worked "; 
-47       cin >> anumber; 
-48       b[i] = b[i] + anumber; 
-49 			 timesheet_hours[i][j] = anumber; 
-50 		} 
-51 		for(int i=0; i<5; i++) 
-52     { 
-53       /// START OF PAYE CALCULATION 
-54       gross_pay[i] = b[i] * hourly_rate[i]; 
-55       if(gross_pay[i] <= 630.77) 
-56       { 
-57         paye[i] = gross_pay[i] * .2; 
-58         /// cout<<endl<<" Employee"<< i+1 << " PAYE = " << paye[i]; 
-59       } 
-60       if(gross_pay[i] >630.77) 
-61       { 
-62         paye[i] = ((gross_pay[i] - 630.77) * .41) +(630.77*.2); 
-63         ///cout<<endl<<" Employee"<< i+1 << " PAYE = " << paye[i]; 
-64       } 
-65       /// ENDS OF PAYE CALCULATION 
-66 
-68       ///START OF PRSI CALCULATION 
-69       eeprsi[i] = gross_pay[i]*.04; 
-70 
-71       erprsi[i] = gross_pay[i]*.085; 
-72
-73       total_prsi[i]= eeprsi[i]+erprsi[i]; 
-74       /// cout<<endl<<" Employee"<< i+1 << " PRSI = " << total_prsi[i]; 
-75       /// ENDS OF PRSI CALCULATION 
-76
-77       /// START OF USC TAX CALCULATION 
-78       if (gross_pay[i]>308) 
-79       { ///2%of 193 = 3.86 
-80         ///4% of 115 = 4.60  94.6 + 3.86 = 8.46) 
-81         usc[i]=((gross_pay[i]-308)*.07) +8.46; 
-82         ///cout<<endl<<" Employee"<< i+1 << " USC = " << usc[i]; 
-83         int flag = 1; 
-84       } 
-85       if (gross_pay[i]<=193) 
-86       { 
-87         usc[i]=gross_pay[i]*.02; 
-88         ///cout<< endl << " Employee" <<i+1<<" USC = " <<usc[i]<<endl<<endl; 
-89         int flag =1; 
-90       } 
-91         if (gross_pay[i]>193 && gross_pay[i]<=308) 
-92       { 
-93       usc[i]=((gross_pay[i]*.04) +3.86)+(193*.02); 
-94       ///cout << endl << " Employee" <<i+1<<" USC = " <<usc[i]<<endl<<endl; 
-95       int flag =1; 
-96       } 
-97       /// ENDS OF USC TAX CALCULATION 
-98 		} 
-99 		 
-100   cout <<"____________________________________________________"<<endl; 
-101 	} 
-102
-103   menu: 
-104 
-105   cout <<" _______________________________"  << endl; 
-106   cout <<"|  PAYROL TIMESHEET DATA MENU   |" << endl; 
-107   cout <<"|  Input Data          - 1      |" << endl; 
-108   cout <<"|  Gross to Net report - 2      |" << endl; 
-109   cout <<"|  Payslip             - 3      |" << endl; 
-110   cout <<"|  Report              - 4      |" << endl; 
-111   cout <<"|_______________________________|" << endl <<endl; 
-112 
-113   cout <<" Please enter your option: "; 
-114   cin >> option1; 
-115   switch(option1) 
-116   { 
-117     case 1: 
-118     cout << "   Figure 1                                                                  "<<endl; 
-119     cout << "  ________________ LAYOUT FOR THE INPUT DATA ________________________________" <<endl; 
-120     cout << "|              |           |     |      |      |      |      | Hourly| Tax   |"<< endl; 
-121     cout << "| Employee Name| PPS Number| Mon | Tue  | Wed  | Thu  | Fri  | Rate  | Credit|"<< endl; 
-122     cout << "|____________________________________________________________________________|" <<endl; 
-123 
-124       for (int i=0; i<5; i++) 
-125       { 
-126         cout <<"  "<< firstname[i] << " | " << ppsno[i]  << " | "; 
-127         for(int j=0; j<5; j++) 
-128         { 
-129           cout << timesheet_hours [i] [j] << "   |  "; 
-130         } 
-131         ross_pay[i] = b[i] * hourly_rate[i]; 
-132         cout << hourly_rate[i] << "   | "<< tax_credit[i] <<"   |"<< endl << endl; 
-133       } 
-134        
-135       optionlabel1: 
-136       cout << "\n"; 
-137       cout << " Do you want to go back to menu?" << endl; 
-138       cout << " [1] Yes" << endl; 
-139       cout << " [2] No, go to exit" <<endl; 
-140       cout <<" Please key in uour option: "; 
-141       cin >> option2; 
-142 
-143       if(option2 == 1) 
-144         goto menu; 
-145
-146       if(option2 == 2) 
-147         goto exit; 
-148 
-149       else 
-150         goto optionlabel1; 
-151       cout<<"____________________________________________________"<<endl; 
-152
-153     case 2: 
-154       cout << "  Figure 2                                             "<<endl; 
-155       cout << " ____________________________________________________________"  << endl; 
-156       cout << "|         Layout for Gross to net report                     |" << endl; 
-157       cout << "| ---------------------------------------------------------- |" << endl; 
-158       cout << "|Emp No|     Name     | Gross | PAYE  | PRSI | USC | Net Pay |" << endl; 
-159       cout << "|____________________________________________________________|" << endl; 
-160 
-161       for (int i=0; i<5; i++) 
-162       { 
-163         cout <<" i+1 "<<" |"<< firstname[i] << " | " << gross_pay[i]  << " | "<< paye[i]<<" |" << total_prsi[i]<<"|"<<usc[i]<<net_pay[i]<<endl; 
-164       { 
-165       optionlabel2: 
-166         cout << "\n"; 
-167         cout << " Do you want to go back to menu?" << endl; 
-168         cout << " [1] Yes" << endl; 
-169         cout << " [2] No, go to exit" <<endl; 
-170         cout <<" Please key in uour option: "; 
-171         cin >> option2; 
-172 
-173         if(option2 == 1) 
-174           goto menu; 
-175 
-176         if(option2 == 2) 
-177           goto exit; 
-178 
-179         else 
-180           goto optionlabel2; 
-181         cout<<"____________________________________________________"<<endl; 
-182 
- 
-183     case 3: 
-184       for (int i=0; i<5; i++) 
-185       { 
-186         cout<<endl<<  "___________________________________________________"<< endl; 
-187         cout << "                                                      "<< endl; 
-188         cout << "          Payslip for employee "<< i+1<< endl; 
-189         cout << " __________________________________________________"<<  endl; 
-190         cout << "|                          " << endl; 
-191         cout << "|  Name        " << "       "<<firstname[i] << endl; 
-192         cout << "|  PPS Number  " << "        "<<ppsno[i] <<endl; 
-193         cout << "|  Gross Pay   " << "        "<< gross_pay[i] << endl; 
-194         cout << "|  PAYE        " << "        "<< paye[i]<<endl; 
-195         cout << "|  PRSI        " << "        "<<eeprsi[i]<<endl; 
-196         cout << "|  USC         " << "        "<<usc[i]<<endl; 
-197         cout << "|  NET         " << "        "<<net_pay[i]<<endl; 
-198         cout << "|__________________________________________________"<<  endl; 
-199       } 
-200 
- 
-201       optionlabel3: 
-202         cout << "\n"; 
-203         cout << " Do you want to go back to menu?" << endl; 
-204         cout << " [1] Yes" << endl; 
-205         cout << " [2] No, go to exit" << endl; 
-206         cout <<" Please key in uour option: "; 
-207         cin >> option2; 
-208 
- 
-209         if(option2 == 1) 
-210           goto menu; 
-211 
- 
-212         if(option2 == 2) 
-213           goto exit; 
-214 
- 
-215         else 
-216           goto optionlabel3; 
-217         cout<<"____________________________________________________"<<endl; 
-218 
- 
-219     case 4: 
-220       cout << "   Figure5                                                                 "<<endl; 
-221       cout << "  ________________________________REPORT___________________________________ "<<endl; 
-222       cout << "|              |       |       |       |       |       |        |          |"<< endl; 
-223       cout << "| Employee Name|  Mon  |  Tue  |  Wed  |  Thu  |  Fri  |  Total | Gross Pay|"<< endl; 
-224       cout << "|__________________________________________________________________________|"<<endl; 
-225 
- 
-226       for (int i=0; i<5; i++) 
-227       { 
-228         cout <<"  "<< firstname[i] << " |  "; 
-229         for(int j=0; j<5; j++) 
-230         { 
-231           cout << timesheet_hours [i] [j] << "   |   "; 
-232         } 
-233 
- 
-234       gross_pay[i] = b[i] * hourly_rate[i]; 
-235       cout << b[i] << "  |  " << gross_pay[i] <<" | " << endl << endl; 
-236       } 
-237       optionlabel4: 
-238         cout << endl<<endl; 
-239         cout << "Do you want to go back to menu?" <<  endl; 
-240         cout << "[1] Yes" <<  endl; 
-241         cout << "[2] No, go to exit" << endl; 
-242         cout <<"Your option: "; 
-243         cin >> option2; 
-244 
- 
-245         if(option2 == 1) 
-246           goto menu; 
-247 
- 
-248         if(option2 == 2) 
-249           goto exit; 
-250 
- 
-251         else 
-252           goto optionlabel4; 
-253           exit: 
-254   } 
-255   return 0; 
-256 } 
+#include<iostream>
+#include<fstream>
+#include <string>
+using namespace std;
+float anumber;
+
+string firstname[5] {"Sean O Brien", "Sarah Murphy","Karen Phelan", "   Pat Kelly", "  Joe Turley" }, surname= "";
+string ppsno[5] {" 6183529G", " 1234567B", " 2345678K", " 2342345F", " 9982341G"};
+
+float b[5];
+float gross_pay[5];
+float hours[5];
+float hourly_rate [5] = {22, 20, 22, 10, 27};
+float tax_credit [5] = {66, 65, 63, 36, 56};
+int option1;
+int option2;
+float paye[5];
+float prsi[5];
+float usc[5];
+float net_pay[5];
+float annual_income[5];
+
+
+int main()
+{
+
+   int timesheet_hours[5][5];
+   //creates a 9*9 matrix or a 2d array.
+
+  	for(int i=0; i<5; i++)    //This loops on the rows.
+  	{
+  
+    		cout << " Outer loop for employee number" <<  i +1 << endl;
+    		cout <<"____________________________________________________"<<endl;
+  
+    		for(int j=0; j<5; j++) //This loops on the columns
+    		{
+    
+          cout <<" Key in daily hours worked ";
+          cin >> anumber;
+          b[i] = b[i] + anumber;
+    			   timesheet_hours[i][j] = anumber;
+    	 	}
+       cout <<"____________________________________________________"<<endl;
+	   }
+	   
+    menu:
+      cout <<" __________________________"  << endl;
+      cout <<"|          MENU            |" << endl;
+      cout <<"| [1] Input Data           |" << endl;
+      cout <<"| [2] Gross to net report  |" << endl;
+      cout <<"| [3] Payslip              |" << endl;
+      cout <<"|__________________________|" << endl <<endl;
+
+      cout <<" Please enter your option: ";
+      cin >> option1;
+      switch(option1)
+      {
+         case 1:
+            cout << "                                                                                ";
+            cout << " _____________ Layout for the input data _______________________________________" <<endl;
+            cout << "|    First    "  << "|    PPS    " << "| Mon " <<"| Tue "<<"| Wed "<<"| Thu "<<"| Fri " <<"| Total "<<"| Hourly "<<"| Gross " <<"| Tax   "<< endl;
+            cout << "|    Name     "  << "|   Number  " << "|     " <<"|     "<<"|     "<<"|     "<<"|     " <<"| Hours "<<"| Rate   "<<"| Pay   " <<"| Credit"<< endl;
+            cout << "|-------------------------------------------------------------------------------" <<endl;
+    
+            for (int i=0; i<5; i++)
+            {
+               cout << firstname[i] << "| " << ppsno[i]  << " | ";
+               for(int j=0; j<5; j++)
+               {
+                  cout << timesheet_hours [i] [j] << "  |  ";
+               }
+               gross_pay[i] = b[i] * hourly_rate[i];
+               cout << b[i] << "  | " << hourly_rate[i] << "  | " << gross_pay[i] <<"  | "<< tax_credit[i] << endl << endl;
+            }
+            optionlabel1:
+              cout << "\n";
+              cout << " Do you want to go back to menu?" << endl;
+              cout << " [1] Yes" << endl;
+              cout << " [2] No, go to exit" <<endl;
+              cout <<" Please key in uour option: ";
+              cin >> option2;
+     
+              if(option2 == 1)
+                goto menu;
+     
+              if(option2 == 2)
+                goto exit;
+     
+              else
+                goto optionlabel1;
+              cout<<"____________________________________________________"<<endl;
+
+         case 2:
+           goto gross;
+           cout<<endl<<endl;
+
+         case 3:
+           cout << "                                                           ";
+           for (int i=0; i<5; i++)
+           {
+              cout<<endl<<  "____________________________________________________"<< endl;
+              cout<< "          Payslip for employee "<< i+1<< endl;
+              cout << " _____________________________________________" <<  endl;
+              cout << "|                                    |" << endl;
+              cout << "|  Name        " << firstname[i]<< endl;
+              cout << "|  PPS Number  " << "   "<<ppsno[i]<<endl;
+              cout << "|  Gross Pay   " << "        "<<gross_pay[i] << endl;
+              cout << "|  PAYE        " << "        "<<paye[i]<<endl;
+              cout << "|  EE PRSI     " << "        "<<prsi[i]<<endl;
+              cout << "|  USC         " << "        "<<usc[i]<<endl;
+              cout << "|  NET         " << "        "<<net_pay[i]<<endl;
+              cout << "|_____________________________________________|" <<  endl;
+            }
+            optionlabel2:
+              cout << "\n";
+              cout << " Do you want to go back to menu?" << endl;
+              cout << " [1] Yes" << endl;
+              cout << " [2] No, go to exit" << endl;
+              cout <<" Please key in uour option: ";
+              cin >> option2;
+
+              if(option2 == 1)
+                goto menu;
+
+              if(option2 == 2)
+                goto exit;
+
+              else
+                goto optionlabel2;
+        break;
+      }//End of switch case
+      
+      gross:
+      cout << "                                              ";
+      cout << " ____________________________________________"  << endl;
+      cout << "|      Layout for Gross to net report        |" << endl;
+      cout << "| ------------------------------------------ |" << endl;
+      cout << "| Name | Gross | PAYE | PRSI | USC | Net Pay |" << endl;
+      cout << "|____________________________________________|" << endl;
+
+      for(int i=0; i<5; i++)
+      {
+         /// PAYE STARTS HERE
+         gross_pay[i] = b[i] * hourly_rate[i];
+         if(gross_pay[i] <= 630.77)
+           paye[i] = gross_pay[i] * .20;
+         else
+           paye[i] = ((gross_pay[i] - 630.77) * .41) - tax_credit[i];
+         /// PAYE ENDS HERE
+         
+         /// PRSI STARTS HERE
+         if(gross_pay[i] <= 1144)
+            prsi[i] = gross_pay[i] * .02;
+          else
+            prsi[i] = gross_pay[i] * .04;
+          /// PRSI ENDS HERE
+
+          /// USC TAX START HERE
+          annual_income[i] = gross_pay[i] * 52;
+          if(annual_income[i] > 4004)
+            usc[i] = (gross_pay[i] - ((193 * .02) + (115 * .04))) * .07;
+          /// USC TAX ENDS HERE
+
+          cout <<firstname[i] << " " << gross_pay[i] << " " << paye[i] << " " << prsi[i] <<" "<< usc[i] <<  endl;
+      }
+      optionlabel3:
+        cout << "\n";
+        cout << "Do you want to go back to menu?" <<  endl;
+        cout << "[1] Yes" <<  endl;
+        cout << "[2] No, go to exit" << endl;
+        cout <<"Your option: ";
+        cin >> option2;
+
+        if(option2 == 1)
+          goto menu;
+
+        if(option2 == 2)
+          goto exit;
+
+        else
+          goto optionlabel3;
+        exit:
+   return 0;
+ }
+
+
+
