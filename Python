@@ -1,0 +1,177 @@
+__author__ = 'Nataliya Kizyuk C14737691'
+
+# program to calculate the monthly average price for Google and tell the best and worst six-month period for Google.
+# date: 22/11/2015
+
+def main():
+    try:
+        link_name = 'https://www.dropbox.com/s/qr7cu2kui654kgz/googlePrices.csv?dl=1'
+        # 1. get data form the file
+        data_list = get_http_resource(link_name, encoding="utf-8")
+        
+        # 2. calculate monthly average price
+        records_list = get_month_year_average(data_list)
+        
+        # 3. find the best and the worst six-month chunk (period)
+        best_worst_chunk = get_best_worst_chunk(records_list)
+        
+        # 4.find the best six month and the worst six month
+        six_month = get_best_worst_six_month(records_list)
+        
+        # 5. print the selected option from the menu
+        replay = 1
+        print("\n\tTHIS PROGRAM CAN PERFORM FOLLOWING RESEARCH:")
+        while replay == 1: # to repeat loop until option 0/exit
+            option = menu() #call function menu
+            if option == '1':
+                print("\nThe best six-month chunk period for Google:")
+                print_result(best_worst_chunk[0][::-1])  # best six-month  chunk is stored in first element of the list
+            elif option == '2':
+                print("\nThe worst six-month chunk period  for Google:")
+                print_result(best_worst_chunk[1][::-1])  # worst six-month chunk is stored in second element of the list
+            elif option == '3':
+                print("\nThe best six month for Google:")
+                print_result(six_month[0])  # best six month for Google are stored in first element of the list
+            elif option == '4':
+                print("\nThe worst six month for Google:")
+                print_result(six_month[1])  # worst six month for Google are stored in first element of the list
+            else:
+                print("\n\n\nTHE INPUT IS INVALID! NO SUCH OPTION AS:", option,
+                      "\nTRY AGAIN OR PRESS '0' FOR EXIT\n\n\n")
+    except IOError as e:
+        print(e)
+
+
+def get_http_resource(url, encoding="utf-8"):
+    '''
+    Function to open the link, get data and return list of records to the main
+    :param link_name: 'https://www.dropbox.com/s/qr7cu2kui654kgz/googlePrices.csv?dl=1'
+    :return data: dictionary
+    '''
+    import httplib2
+    import csv
+    h = httplib2.Http(".cache")
+    response_headers, response_body = h.request(url)
+    if response_headers["status"] > "199" and response_headers["status"] < "400":
+        csv_file = response_body.decode(encoding).split('\n')   # decode and split data into lines
+        data = csv.DictReader(csv_file) # use DictReader method of csv module to read csv file to dictionary
+        return data
+    else:
+        return "Something went wrong. Code was {} ".format(response_headers["status"])
+
+
+def get_month_year_average(list_of_data):
+    '''
+    Function to calculate the monthly average price for Google.
+    It brings one parameter from the main() that is dictionary
+    and return to the main() list of tuples,each tuple contains monthly average price,year,month
+    formula for monthly average price = ((v1*c1)+(v2*c2)+(v3*c3)+(v4*c4)...+(vn*cn)) / (v1+v2+v3+v4...+vn)
+    where 'v' stands for volume for day i and 'c' stands for adjusted close price for day i
+    :param list_of_data: dictionary thar contains data from file
+    :return month_year_average_list: list of tuples
+    '''
+    month_year_average_list = []
+    record = ()  # create tuple to store monthly average, year, month
+    total_vol_by_close = total_volume = 0.0
+    previous_month = None
+
+    for row in list_of_data:
+        year, month, day = row.get("Date").split('-')  # split the date in year,month and day
+        volume = float(row.get("Volume"))  # using get method to get the value of volume from dictionary
+        close = float(row.get("Adj Close")) # using get method to get the value of adj close from dictionary
+
+        if month != previous_month and previous_month is not None:  # if month is changed
+            month_year_average_list.append(record)  # append record of previous month to the list
+            total_vol_by_close = total_volume = 0.0  # clear variables for the current month
+
+        total_vol_by_close += volume * close  # total_vol_by_close = ((v1*c1)+(v2*c2)+(v3*c3)...+(vn*cn))
+        total_volume += volume  # total_volume = v1+v2+v3+v4...+vn
+        average = total_vol_by_close / total_volume
+        record = (average, year, month)  # create tuple with three arguments
+        previous_month = month
+
+    month_year_average_list.append(record)  # append record of the last month to the list
+    return month_year_average_list
+
+
+def get_best_worst_six_month(records_list):
+    '''
+    Function to find the best six month and the worst six month for the Google
+    it brings one argument from the main() that is list of tuples(average,year,month)
+    and returns to the main() best and worst six month
+    'operator' module
+    :param records_list: list of tuples
+    :return (best_six, worst_six): tuple with two arguments,each argument is the list of six elements
+    '''
+    records_list.sort()  # sort the list in ascending order
+    worst_six = records_list[:6]  # assign first six elements of the sorted list to the worst_six
+    best_six = records_list[::-1][:6]  # assign first six elements of the sorted and reversed list to the best_six
+    return best_six, worst_six
+
+
+def get_best_worst_chunk(list_of_records):
+    '''
+    function to find the best and the worst six-month chunk period and return them to main()
+    it brings one argument from the main() that is list of tuples(month,year,average)
+    and returns to the main() best six-month chunk and worst six-month chunk
+    :param list_of_records: list of tuples
+    :return best and worst: tuple with two arguments,each argument is the list of six elements
+    '''
+    period = best_period = worst_period = []
+    total = max_total = temp = 0
+    i = 0  # declare 'i' for start point and assign it to 0
+    stop = 6  # declare 'stop' for stop point and assign it to 6
+    while i < stop != len(list_of_records) + 1:  # while loop goes through each six-month period: 1:6,2:7,3:8...95:100
+        total += list_of_records[i][0]  # add monthly average price to total
+        check = (stop - 1)  # check if six month done
+        period.append(list_of_records[i])  # add month record to the list of periods
+        if i == check:  # if six month counted
+            i = stop - 6  # update start point
+            stop += 1  # update stop point
+            if total > max_total:  # if total average of current term is higher then highest total average
+                max_total = total
+                best_period = period  # assign current term( six month list)to the best six-month period for Google
+            elif total < temp:  # if total average of current term is lower then total average of previous period
+                worst_period = period  # assign current term(six month list) to the worst six-month period for Google
+            temp = total  # assign total average of previous period to temp
+            period = []  # clear the list for next period
+            total = 0  # clear total for next period
+        i += 1
+    return (best_period, worst_period)
+
+
+def print_result(result):
+    '''
+    Function to print month,year,and monthly average price of each of six month
+    :param result: list of six tuples
+    :return None: it has no return
+    '''
+    print("_______________________________________")
+    print("MONTH", "\t", "YEAR", "\t", "MONTHLY AVERAGE PRICE")
+    for i in result:
+        print(" ", i[2], "\t", i[1], "\t\t", "{0:.2f}".format(i[0]))
+
+
+def menu():
+    '''
+    Function to show menu to the user, to get option from the user and return it to main()
+    :return: selected_option that is string
+    '''
+    print(" _____________________________________________________________________")
+    print("|  Option 1: Find the best six-month chunk period for Google   (1)    |")
+    print("|  Option 2: Find the worst six-month chunk period for Google  (2)    |")
+    print("|  Option 3: Find the best six month for Google   (3)                 |")
+    print("|  Option 4: Find the worst six month for Google  (4)                 |")
+    print("|  Option 0: Exit the program  (0)                                    |")
+    print("|_____________________________________________________________________|")
+
+    selected_option = input(" PLEASE KEY IN YOUR OPTION: ").strip(' ')  # strip input from white spaces
+    if selected_option == '0':
+        print("\n\n\n YOU ENTERED '0' FOR EXIT !\n\n\n")
+        exit(0)
+    else:
+        return selected_option
+
+
+if __name__ == "__main__":
+    main()
