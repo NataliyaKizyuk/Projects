@@ -1,0 +1,678 @@
+/*  author: Nataliya Kizyuk
+     date: 25/02/2015
+     To test the Improved Bubble Sort algorithm: */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<conio.h> // header for clrscr();
+#include<ctype.h> // header needed for isdigit(char)
+
+//prototypes
+void generate_array(int[],int);
+void imp_bub_sort(int[],int);
+void exit(void);
+
+main()
+{
+    int A1[800];    //declare array A , of size n = 800 to store the numbers
+    int A2[1600];    //declare array A , of size n = 1600 to store the numbers
+    int A3[2400];    //declare array A , of size n = 2400 to store the numbers
+    int A4[3200];    //declare array A , of size n = 3200to store the numbers
+    int A5[4000];    //declare array A , of size n = 4000to store the numbers
+    int n;
+    int num;
+    char option = 0;    //declaring char variable to store inputed option
+
+    printf(" \n  WELCOME TO THE MENU OF THE IMPROVED_BUBBLE SORT ALGORITHM ASSIGNMENT PROGRAM \n");
+
+  do // Start of 'do...while' that make program to run continually and re - display the menu while option 4 will be entered
+  {
+        printf("\n");   //BORDERS FOR MENU SCREEN
+        printf("        _____________________________________________________________\n" );
+        printf("       |                                                             |\n");
+        printf("       |   MAIN MENU                                                 |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Option 1:  n = 800                                         |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Option 2:  n = 1600                                        |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Option 3:  n = 2400                                        |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Option 4:  n = 3200                                        |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Option 5:  n = 4000                                        |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Option 6: Exit Program                                     |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Please enter 1, 2, 3, 4, 5 or 6                            |\n");
+        printf("       |_____________________________________________________________|\n");
+
+        printf(" \n   Please Key In Your Option  " );
+        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+        //if i put %1s it recognise only first digit from double digit character, e.g:
+        // if you input 12 for option it will ignore 2 and swich program to case 1
+        flushall();
+
+        clrscr();  // Clears the screen
+
+        num = atoi(&option);//convert char to int to perform error checking
+
+        //error checking for options (checks that input is not a letter)
+        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+        {
+            //Start of 'swich case' that will switch program from one option to another
+            switch(num)
+            {
+                case 1: //when user entered option 1
+                {
+                    n = 800;
+
+                    do // Start of 'do...while' that make program to run continually and re - display the menu while option 3
+                    {
+                        printf("\n");   //BORDERS FOR MENU SCREEN
+                        printf("        _____________________________________________________________\n" ); 
+                        printf("       |                                                             |\n");
+                        printf("       |     MENU  FOR OPTION 1                                      |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 1:  Generate array of 800 random elements           |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 2:  Sort array in ascending order                   |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 3:  Exit                                            |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Please enter 1, 2, or 3                                    |\n");
+                        printf("       |_____________________________________________________________|\n");
+                    
+                        printf(" \n   Please Key In Your Option  " );
+                        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+                        flushall();
+                        clrscr();  // Clears the screen
+                        
+                        num = atoi(&option);//convert char to int to perform error checking 
+                        
+                        //error checking for options (checks that input is not a letter)
+                        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+                        {
+                            //Start of 'swich case' that will switch program from one option to another
+                            switch(num)
+                            {
+                                case 1: //when user entered option 1.1
+                                {
+                                    // setup an array of elements( all integers) in reverse order, of size n 
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("  ARRAY OF 800 RANDOM INTEGERS(ELEMENTS)\n\n");
+                                    
+                                    generate_array(A1, n);
+                                    
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of case 1.1
+                                
+                                case 2://when user entered option 1.2
+                                {
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    //Call function imp_bubble_sort()
+                                    imp_bub_sort(A1,n);
+                                
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                } //end of case 1. 2
+                                
+                                case 3://when user entered option 1.3
+                                {
+                                   break; 
+                                }
+                                
+                                default://error checking: if input is not single digit it will display following: 
+                                {
+                                    printf("\n   There is no option %d!",num);
+                                    printf("\n   Error In Input! Please Try Again! \n");
+                                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of default
+                                
+                            }//end switch
+                            
+                        }//end of if()
+                        else
+                        {
+                            //error checking: if input is a letter it will display following: 
+                            printf("\n   There is no option %c!",option);
+                            printf("\n   Error In Input!!! Please Try Again! \n");
+                            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+                            getch(); //getch is used to hold the screen 
+                            clrscr();  // Clears the screen
+                            
+                        } // end of else - error checking for options
+                    }//end do 
+                    while(num != 3); //while user entere option 1 .3 - exit()
+
+                    break;
+                } //end of case 1
+
+                case 2: //when user entered option 2
+                {
+                    n = 1600;
+
+                     do // Start of 'do...while' that make program to run continually and re - display the menu while option 3
+                    {
+                        printf("\n");   //BORDERS FOR MENU SCREEN
+                        printf("        _____________________________________________________________\n" ); 
+                        printf("       |                                                             |\n");
+                        printf("       |     MENU  FOR OPTION 2                                      |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 1:  Generate array of 1600 random elements          |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 2:  Sort array in ascending order                   |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 3:  Exit                                            |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Please enter 1, 2, or 3                                    |\n");
+                        printf("       |_____________________________________________________________|\n");
+                    
+                        printf(" \n   Please Key In Your Option  " );
+                        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+                        flushall();
+                        clrscr();  // Clears the screen
+                        
+                        num = atoi(&option);//convert char to int to perform error checking 
+                        
+                        //error checking for options (checks that input is not a letter)
+                        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+                        {
+                            //Start of 'swich case' that will switch program from one option to another
+                            switch(num)
+                            {
+                                case 1: //when user entered option 2.1
+                                {
+                                    // setup an array of elements( all integers) in reverse order, of size n 
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("  ARRAY OF 1600 RANDOM INTEGERS(ELEMENTS) \n\n");
+                                    
+                                    generate_array(A2, n);
+                                    
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of case 2.1
+                                
+                                case 2://when user entered option 2.2
+                                {
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    //Call function imp_bubble_sort()
+                                    imp_bub_sort(A2,n);
+                                
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                } //end of case 2. 2
+                                
+                                case 3://when user entered option 2.3
+                                {
+                                   break; 
+                                }
+                                
+                                default://error checking: if input is not single digit it will display following: 
+                                {
+                                    printf("\n   There is no option %d!",num);
+                                    printf("\n   Error In Input! Please Try Again! \n");
+                                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of default
+                                
+                            }//end switch
+                            
+                        }//end of if()
+                        else
+                        {
+                            //error checking: if input is a letter it will display following: 
+                            printf("\n   There is no option %c!",option);
+                            printf("\n   Error In Input!!! Please Try Again! \n");
+                            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+                            getch(); //getch is used to hold the screen 
+                            clrscr();  // Clears the screen
+                            
+                        } // end of else - error checking for options
+                    }//end do 
+                    while(num != 3); //while user entere option 2.3 - exit()
+
+                    break;
+                } //end of case 2
+
+                case 3: //when user entered option 3
+                {
+                    n = 2400;
+
+                   do // Start of 'do...while' that make program to run continually and re - display the menu while option 3
+                    {
+                        printf("\n");   //BORDERS FOR MENU SCREEN
+                        printf("        _____________________________________________________________\n" ); 
+                        printf("       |                                                             |\n");
+                        printf("       |     MENU  FOR OPTION 3                                      |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 1:  Generate array of 2400 random elements          |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 2:  Sort array in ascending order                   |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 3:  Exit                                            |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Please enter 1, 2, or 3                                    |\n");
+                        printf("       |_____________________________________________________________|\n");
+                    
+                        printf(" \n   Please Key In Your Option  " );
+                        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+                        flushall();
+                        clrscr();  // Clears the screen
+                        
+                        num = atoi(&option);//convert char to int to perform error checking 
+                        
+                        //error checking for options (checks that input is not a letter)
+                        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+                        {
+                            //Start of 'swich case' that will switch program from one option to another
+                            switch(num)
+                            {
+                                case 1: //when user entered option 3.1
+                                {
+                                    // setup an array of elements( all integers) in reverse order, of size n 
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("  ARRAY OF 2400 RANDOM INTEGERS(ELEMENTS)\n\n");
+                                    
+                                    generate_array(A3, n);
+                                    
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of case 3.1
+                                
+                                case 2://when user entered option 3.2
+                                {
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    //Call function imp_bubble_sort()
+                                    imp_bub_sort(A3,n);
+                                
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                } //end of case 3. 2
+                                
+                                case 3://when user entered option 3.3
+                                {
+                                   break; 
+                                }
+                                
+                                default://error checking: if input is not single digit it will display following: 
+                                {
+                                    printf("\n   There is no option %d!",num);
+                                    printf("\n   Error In Input! Please Try Again! \n");
+                                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of default
+                                
+                            }//end switch
+                            
+                        }//end of if()
+                        else
+                        {
+                            //error checking: if input is a letter it will display following: 
+                            printf("\n   There is no option %c!",option);
+                            printf("\n   Error In Input!!! Please Try Again! \n");
+                            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+                            getch(); //getch is used to hold the screen 
+                            clrscr();  // Clears the screen
+                            
+                        } // end of else - error checking for options
+                    }//end do 
+                    while(num != 3); //while user entere option 3.3 - exit()
+
+                    break;
+                }//end of case 3
+
+                case 4: // when user entered option 4
+                {
+                    n = 3200;
+
+                    do // Start of 'do...while' that make program to run continually and re - display the menu while option 3
+                    {
+                        printf("\n");   //BORDERS FOR MENU SCREEN
+                        printf("        _____________________________________________________________\n" ); 
+                        printf("       |                                                             |\n");
+                        printf("       |     MENU  FOR OPTION 4                                      |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 1:  Generate array of 3200 random elements          |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 2:  Sort array in ascending order                   |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 3:  Exit                                            |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Please enter 1, 2, or 3                                    |\n");
+                        printf("       |_____________________________________________________________|\n");
+                    
+                        printf(" \n   Please Key In Your Option  " );
+                        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+                        flushall();
+                        clrscr();  // Clears the screen
+                        
+                        num = atoi(&option);//convert char to int to perform error checking 
+                        
+                        //error checking for options (checks that input is not a letter)
+                        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+                        {
+                            //Start of 'swich case' that will switch program from one option to another
+                            switch(num)
+                            {
+                                case 1: //when user entered option 4.1
+                                {
+                                    // setup an array of elements( all integers) in reverse order, of size n 
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("  ARRAY OF 3200 RANDOM INTEGERS(ELEMENTS) \n\n");
+                                    
+                                    generate_array(A4, n);
+                                    
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of case 4.1
+                                
+                                case 2://when user entered option 4.2
+                                {
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    //Call function imp_bubble_sort()
+                                    imp_bub_sort(A4,n);
+                                
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                } //end of case 4. 2
+                                
+                                case 3://when user entered option 4.3
+                                {
+                                   break; 
+                                }
+                                
+                                default://error checking: if input is not single digit it will display following: 
+                                {
+                                    printf("\n   There is no option %d!",num);
+                                    printf("\n   Error In Input! Please Try Again! \n");
+                                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of default
+                                
+                            }//end switch
+                            
+                        }//end of if()
+                        else
+                        {
+                            //error checking: if input is a letter it will display following: 
+                            printf("\n   There is no option %c!",option);
+                            printf("\n   Error In Input!!! Please Try Again! \n");
+                            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+                            getch(); //getch is used to hold the screen 
+                            clrscr();  // Clears the screen
+                            
+                        } // end of else - error checking for options
+                    }//end do 
+                    while(num != 3); //while user entere option 4.3 - exit()
+
+                    break;
+                }//end of case 4
+
+                case 5://case 5 when user entered option 5 for exit
+                {
+                    n = 4000;
+
+                    do // Start of 'do...while' that make program to run continually and re - display the menu while option 3
+                    {
+                        printf("\n");   //BORDERS FOR MENU SCREEN
+                        printf("        _____________________________________________________________\n" ); 
+                        printf("       |                                                             |\n");
+                        printf("       |     MENU  FOR OPTION 5                                      |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 1:  Generate array of 4000 random elements          |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 2:  Sort array in ascending order                   |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Option 3:  Exit                                            |\n");
+                        printf("       |                                                             |\n");
+                        printf("       |  Please enter 1, 2, or 3                                    |\n");
+                        printf("       |_____________________________________________________________|\n");
+                    
+                        printf(" \n   Please Key In Your Option  " );
+                        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+                        flushall();
+                        clrscr();  // Clears the screen
+                        
+                        num = atoi(&option);//convert char to int to perform error checking 
+                        
+                        //error checking for options (checks that input is not a letter)
+                        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+                        {
+                            //Start of 'swich case' that will switch program from one option to another
+                            switch(num)
+                            {
+                                case 1: //when user entered option 5.1
+                                {
+                                    // setup an array of elements( all integers) in reverse order, of size n 
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("  ARRAY OF 4000 RANDOM INTEGERS(ELEMENTS)\n\n");
+                                    
+                                    generate_array(A5, n);
+                                    
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of case 5.1
+                                
+                                case 2://when user entered option 5.2
+                                {
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    //Call function imp_bubble_sort()
+                                    imp_bub_sort(A5,n);
+                                
+                                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                                    printf("\n\n     *** Press ANY KEY to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    system("CLS");
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                } //end of case 5. 2
+                                
+                                case 3://when user entered option 5.3
+                                {
+                                   break; 
+                                }
+                                
+                                default://error checking: if input is not single digit it will display following: 
+                                {
+                                    printf("\n   There is no option %d!",num);
+                                    printf("\n   Error In Input! Please Try Again! \n");
+                                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                                    getch(); //getch is used to hold the screen 
+                                    clrscr();  // Clears the screen
+                                    
+                                    break;
+                                }//end of default
+                                
+                            }//end switch
+                            
+                        }//end of if()
+                        else
+                        {
+                            //error checking: if input is a letter it will display following: 
+                            printf("\n   There is no option %c!",option);
+                            printf("\n   Error In Input!!! Please Try Again! \n");
+                            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+                            getch(); //getch is used to hold the screen 
+                            clrscr();  // Clears the screen
+                            
+                        } // end of else - error checking for options
+                    }//end do 
+                    while(num != 3); //while user entere option 1 .3 - exit()
+
+                    break;
+                }//end of case 5
+
+                case 6://case 6 when user entered option 6 for exit
+                {
+                    exit();
+
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+
+                    break;
+                }//end of case 6
+
+                default://error checking: if input is not single digit it will display following:
+                {
+                    printf("\n   There is no option %d!",num);
+                    printf("\n   Error In Input! \n");
+                    printf("\n   Please Try Again! \n");
+
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+
+                    break;
+                }//end of default
+
+            }//end switch
+
+        }//end of if()
+        else
+        {
+            //error checking: if input is a letter it will display following:
+            printf("\n   There is no option %c!",option);
+            printf("\n   Error In Input!!! \n");
+            printf("\n   Please Try Again! \n");
+
+            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+            getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+            clrscr();  // Clears the screen
+
+        } // end of else - error checking for options
+    }//end do
+    while(num != 6); //while user entered option 6 - exit()
+
+    getchar();
+}//end main()
+
+/*Implementation of  generate_array()*/
+void generate_array(int A[],int n)
+{
+    int i;
+    
+    //for loop to generate array with random numbers
+    for(i=0; i<n;i++)
+    {
+        A[i] = rand()% (n*2);
+        printf("\t %d", A[i]);
+    }
+}
+
+/*Implementation of imp_bub_sort() */
+void imp_bub_sort(int Array[],int n)
+{
+    int i,j;
+    int temp;
+    int compare = 0;
+    int swaps = 0;
+    int pass = 0;
+    int flag;
+
+    for(i=n - 1; i>=1; i--)
+    {
+        flag = 0;
+        pass++;
+        for(j=1; j<=i; j++)
+        {
+            compare++;              //Number of comparisons increased for 1
+            if(Array[j-1]>Array[j]) // if value of first element of array is bigger then the value second element than:
+            {
+                //swapping
+                temp = Array[j-1];     // value of the first element will be stored in temporary variable
+                Array[j-1] = Array[j]; //and value of the second element become value of the first element
+                //now, value of the first element that was stored in temporary variable goes to the second element of the array
+                Array[j] = temp;      
+                flag = 1;
+                swaps++;                   // swapping complited. Number of swaps increased for 1.
+            }
+        }
+        if(flag == 0)
+        {
+            break;
+        }
+    }
+
+    printf("\n  RANDOMLY GENERATED ARRAY SORTED BY IMPROVED BUBBLE SORT\n\n");
+    for(i=0; i<n; i++)
+    {
+        printf("\t %d", Array[i]);
+    }
+
+    printf("\n No. of comparisons  - %ld",compare);
+    printf("\n No. of swaps        - %ld \n",swaps);
+    printf("\n No. of passes  - %d",pass);
+}
+
+  /* Implement exit( )  */
+void exit(void)
+{
+   printf("\n\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+   printf("\n\n   Thank you for using my program.\n   Press ENTER to exit.\n   Bye! "  );
+   printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+
+}//end exit()
