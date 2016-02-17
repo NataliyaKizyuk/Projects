@@ -1,0 +1,602 @@
+/* Date: 09/03/2015
+Author: Nataliya Kizyuk
+Assignment for Programming with Persistent data. Due to 07/05/2015
+Program to: 1) Convert the text file matches.txt into a binary file matches.bin, 
+            2) Create a function that reads the binary files of matches and shows the league table
+            3) Create a function to insert a new results
+            4) Create a function to display the match with the highest number of goal scored. 
+            5) Create a function that displays all the matches of a team
+            6) Implement a text menu
+*/
+
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+#include<conio.h>
+#include<ctype.h>
+#define SIZE 180
+
+//structure template
+struct match
+{
+    char team_A[20];
+    char team_B[20];
+    int goals_A;
+    int goals_B;
+};
+
+//Prototypes
+int convert(FILE*,FILE*);
+int check_write(int);
+void read_bin(FILE*, struct match);
+void league_table(FILE*,struct match);
+void new_results(FILE*,struct match);
+void display_highest(FILE*,struct match);
+void dislay_all(FILE*,struct match);
+void exit(void);
+
+main()
+{
+  FILE *text; // declaring file pointer to text file
+  FILE *binary; // declaring file pointer to binary file
+  struct match single_match; //declaring structure variable
+  char option = 0;    //declaring char variable to store inputed option
+  int num; 
+  int converted;
+  
+  /*Implementation of a text menu */
+  printf(" \n                WELCOME TO THE PROGRAM MENU \n");
+
+  do // Start of 'do...while' that make program to run continually and re - display the menu while option 4 will be entered
+  {
+      
+        printf("\n");   //BORDERS FOR MENU SCREEN
+        printf("        _____________________________________________________________\n" ); 
+        printf("       |                                                             |\n");
+        printf("       |     MENU                                                    |\n");
+        printf("       |                                                             |\n");
+        printf("       |  1.Convert file.txt to file.bin                             |\n");
+        printf("       |                                                             |\n");
+        printf("       |  2.Shows the league table                                   |\n");
+        printf("       |                                                             |\n");
+        printf("       |  3.Insert a new results                                     |\n");
+        printf("       |                                                             |\n");
+        printf("       |  4.Display the match with the highest number of goal scored |\n");
+        printf("       |                                                             |\n");
+        printf("       |  5.Display all the matches of a team                        |\n");
+        printf("       |                                                             |\n");
+        printf("       |  6.Read the binary file                                     |\n");
+        printf("       |                                                             |\n");
+        printf("       |  7.Exit                                                     |\n");
+        printf("       |                                                             |\n");
+        printf("       |  Please enter 1, 2, 3, 4, 5, 6 or 7                         |\n");
+        printf("       |                                                             |\n");
+        printf("       |_____________________________________________________________|\n");
+    
+    
+        printf(" \n   Please Key In Your Option  " );
+        scanf("%2s", &option);//%2s - error checking for white spaces and single digit
+        //if i put %1s it recognise only first digit from double digit character, e.g: 
+        // if you input 12 for option it will ignore 2 and swich program to case 1
+        flushall();
+        
+        clrscr();  // Clears the screen
+        
+        num = atoi(&option);//convert char to int to perform error checking 
+        
+        //error checking for options (checks that input is not a letter)
+        if(isdigit(option))//isdigit() checks if character is a digit in range 0-9
+        {
+            //Start of 'swich case' that will switch program from one option to another
+            switch(num)
+            {
+                case 1: //when user entered option 1
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    //call function convert() that  convert the text file matches.txt into a binary file matches.bin,  
+                    //and returns value to the variabe 'converted'('1' if converted and '0' if not(error))
+                    converted = convert(text,binary);//passing file pointers to the function
+                    if(converted != 0)//if returned value is = 1
+                    {
+                        printf("\n The text file matches.txt successfully converted to binary file matches.bin\n");
+                    }
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen
+                    system("CLS");
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                } //end of case 1
+    
+                case 2: //when user entered option 2
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    // call function  league_table()  that reads the binary files of matches and shows the league table
+                    league_table(binary,single_match);
+                        
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen
+                    system("CLS");
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                } //end of case 2
+                
+                case 3: //when user entered option 3
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    //call function new_results()  to insert a new results
+                    new_results(binary,single_match);
+                        
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen
+                    system("CLS");
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 3
+                
+                case 4: // when user entered option 4
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    //call function display_highest() to display the match with the highest number of goal scored
+                    display_highest(binary,single_match); 
+                    
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen
+                    system("CLS");
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 4
+                
+                case 5: // when user entered option 5
+                {
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+                    //call function display_all() that displays all the matches of a team
+                    dislay_all(binary,single_match); 
+                    
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen
+                    system("CLS");
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 5
+                
+                case 6://case 6 when user entered option 6 for reading the bin file
+                {
+                    printf("Contents of binary file matches.bin:");
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    //call function read_bin() that reads converted binary file and display the contents of it
+                    read_bin(binary, single_match);
+                    
+                    printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    
+                    getch(); //getch is used to hold the screen
+                    system("CLS");
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 6
+                
+                case 7://case 7 when user entered option 7for exit
+                {
+                    exit();
+                    
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of case 7
+    
+                default://error checking: if input is not single digit in range 1-7 it will display following: 
+                {
+                    printf("\n   There is no option %d!",num);
+                    printf("\n   Error In Input! \n");
+                    printf("\n   Please Try Again! \n");
+                    
+                    printf("\n\n     *** Press ENTER to proceed to the MENU! ***\n");
+                    getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+                    clrscr();  // Clears the screen
+                    
+                    break;
+                }//end of default
+                
+            }//end switch
+            
+        }//end of if()
+        else
+        {
+            //error checking: if input is a letter it will display following: 
+            printf("\n   There is no option %c!",option);
+            printf("\n   Error In Input!!! \n");
+            printf("\n   Please Try Again! \n");
+            
+            printf("\n\n*** Press ENTER to proceed to the MENU! ***\n");
+            getch(); //getch is used to hold the screen in simple language, if u don't write this the screen
+                            //will just flash and go away
+            clrscr();  // Clears the screen
+            
+        } // end of else - error checking for options
+        
+  }//end do 
+  while(num != 7); //while user entered option 7 - exit()
+    
+  getchar();
+}
+
+/* Implement convert() that convert the text file matches.txt into a binary file matches.bin, */
+int convert(FILE *text,FILE *binary)
+{
+    struct match all_matches[SIZE];//declaring array of struct variables to store all matches(records)
+    char team_a[20];
+    char team_b[20];
+    int goals_a;
+    int goals_b;
+    int count;
+    int check;
+    int i = 0;
+    
+    // Open the source file for reading
+	if((text=fopen("matches.txt","r"))==NULL)
+    {
+		fprintf(stderr,"\n open read file error.\n");
+		//exit(1);
+    }
+    
+	// Open the destination file for writing
+	if((binary=fopen("matches.bin","wb"))==NULL)
+    {
+		fprintf(stderr,"\n open write file error.\n");
+		//exit(1);
+    }
+    
+	 // while not end of file for the source file  and i is less than number of records, copy data into array of structure variables
+    while(fscanf(text,"%[^,],%[^,],%d,%d\n",team_a,team_b,&goals_a,&goals_b)!= EOF && i < SIZE)
+    {	
+        strcpy(all_matches[i].team_A,team_a);//copy of string team_a to the array of struct
+        strcpy(all_matches[i].team_B,team_b);//copy of string team_b to the array of struct
+        all_matches[i].goals_A = goals_a;    //copy of integer goals_a to the array of struct
+        all_matches[i].goals_B=  goals_b;    //copy of integer goals_b to the array of struct
+
+        i++;        
+	}	
+    //writing array of structure variables to the binary file in one go
+    count = fwrite(all_matches, sizeof(all_matches), 1, binary);
+        
+    check = check_write(count); //a utility function that does the write checking 
+    //closing files
+	fclose(text);
+    fclose(binary);
+    
+    return(check);// return value of check to main() to let user know that file was converted or wasn't
+}//end convert()
+
+/* implement function that does the write checking */
+int check_write(int count)
+{
+    int check;
+    
+    if(count == 0)//check if any error writing
+    {		        
+        fprintf(stderr,"\n write file error.\n");
+        check = 0;
+        exit(1);
+    }
+    else
+    {
+        check = 1;
+    }
+    //returns value of check to the convert() function to let program know that 
+    return(check); //there is no error/error occurs in writing to the binary file
+}
+
+/*Implement  league_table() function that reads the binary files of matches and shows the league table*/
+void league_table(FILE *binary,struct match single_match)
+{
+    char str[20];//declaring of string to store name of team
+    int read;
+    int count;
+    int i,j;
+    int numA,numB;
+    int scored,conc,points;
+    printf("\n   League Table   \n");
+    printf("________________________________________________________________________________\n");
+    printf(" \t Team \t \t Goals Scored      Goals Conceded      Points\n");
+    printf("--------------------------------------------------------------------------------\n");
+    
+    if((binary = fopen("matches.bin","rb"))!= NULL)//open binary file with error checking
+    {
+        for(i = 0; i<10; i++)//outer for loop used to read 10 matches (10 teams)
+        {
+            fseek(binary,i*sizeof(single_match),SEEK_SET);//moving pointer to 'i' position
+            count = fread(&single_match,sizeof(single_match),1,binary);//reading of match at position 'i'
+            if(count == 0)
+            {
+               fprintf(stderr,"\n Error in reading matches.bin");
+            }
+            else
+            {
+                strcpy(str,single_match.team_A);//copy of name of team at position 'i' to the string 'str'
+                fseek(binary,0,SEEK_SET);//moving pointer to the start
+                scored = 0;
+                conc = 0;
+                points = 0;
+                
+                for(j = 0; j<SIZE; j++)//inner for loop to read all matches
+                {
+                    read = fread(&single_match,sizeof(single_match),1,binary);//read one struct 
+                    if(read != 0)
+                    {
+                        if((strcmp(str,single_match.team_A))== 0)//comparing 'str' at position 'i' with every team_a in the file
+                        {  //if strings are identical, then
+                            numA = single_match.goals_A;
+                            scored = scored + numA;//add goals_a to scored
+                            numB = single_match.goals_B; 
+                            conc =  conc + numB;//add goals_b to conceded
+                            if(single_match.goals_A > single_match.goals_B)//if team_a win, then
+                            {
+                                points = points + 3;// add 3 points
+                            }
+                            if(single_match.goals_A == single_match.goals_B)// if draw,then
+                            {
+                                points = points + 1;// add 3 points
+                            }
+                        }
+                        if((strcmp(str,single_match.team_B)) == 0)//comparing 'str' at position 'i' with every team_b in the file
+                        {   //if strings are identical, then
+                            numB = single_match.goals_B;
+                            scored = scored + numB;//add goals_b to scored
+                            numA = single_match.goals_A; 
+                            conc =  conc + numA;  //add goals_a to conceded
+                            if(single_match.goals_A < single_match.goals_B)//if team_b win, then
+                            {
+                                points = points + 3;// add 3 points
+                            }
+                            if(single_match.goals_A == single_match.goals_B)// if draw,then
+                            {
+                                points = points + 1;// add 3 points
+                            }           
+                        }
+                    }
+                    else
+                    {
+                        printf("\n Error reading file ");
+                    }
+                }
+                //display info on the screen
+                printf("   %d  %15s \t",i+1,str);
+                printf("\t %d",scored);
+                printf("\t\t %d",conc);
+                printf("\t\t %d\n\n",points);
+            }                
+        }  
+    } 
+    else
+    {
+        fprintf(stderr,"\n Error in opening binary file to read!!!");
+        exit(1);
+    }  
+    fclose(binary);
+    
+}//end league_table()
+
+
+/*Implement new_results(), function to insert a new results */
+void new_results(FILE *binary,struct match single_match)
+{
+    int check;
+    //open binary file to append new result
+    if((binary = fopen("matches.bin","ab"))!= NULL)
+    {
+        printf("\n Please enter the new team A:");
+        gets(single_match.team_A);//read input to the struct member team_A
+        flushall();
+        
+        printf("\n Please enter the new team B:");
+        gets(single_match.team_B);//read input to the struct member team_B
+        flushall();
+        
+        printf("\n Please enter the new Goals A:");
+        scanf("%d",&single_match.goals_A);//read input to the struct member goals_A
+        flushall();
+        
+        printf("\n Please enter the new Goals B:");
+        scanf("%d",&single_match.goals_B);//read input to the struct member goals_B
+        flushall();
+        //move pointer to the position 181 (after last record)
+        fseek(binary, SIZE*sizeof(single_match),SEEK_SET);
+        check = fwrite(&single_match,sizeof(single_match),1,binary);//write single struct to the file
+        fflush(binary);
+        
+        if(check == 0)
+        {
+           fprintf(stderr,"Error writing to the file!!!");
+        }
+    }
+    else
+    {
+        fprintf(stderr,"\n Error in opening binary file to read!!!");
+        exit(1);
+    }  
+    fclose(binary);
+    
+    if((binary = fopen("matches.bin","rb"))!= NULL)
+    {
+        fseek(binary,-1*sizeof(single_match),SEEK_END);
+        check = fread(&single_match,sizeof(struct match),1,binary);
+        if(check == 0)
+        {
+            printf("\n Error in reading matches.bin");
+        }
+        else
+        {
+            printf("\n The new teams with the new results are:");
+            printf(" %s %s %d %d",single_match.team_A, single_match.team_B, single_match.goals_A, single_match.goals_B);
+        }
+    }
+    else
+    {
+        fprintf(stderr,"\n Error in opening binary file to read!!!");
+        exit(1);
+    }  
+    fclose(binary);
+    
+}//end new_results()
+
+/*Implement display_highest(), function to display the match with the highest number of goal scored*/
+void display_highest(FILE *binary,struct match single_match)
+{
+    struct match highest_goal;//declaring of struct variable that will store match with the highest number of goal scored
+    int read;
+    int highest = 0;
+    int total;
+    int numA;
+    int numB;
+    
+    if((binary = fopen("matches.bin","rb"))!= NULL)//open binary file to read
+    {      
+        while(feof(binary) == 0)
+        {
+            read = fread(&single_match,sizeof(struct match),1,binary);
+            if(read == 0)
+            {
+                //printf("\n Error in reading matches.bin\n");
+            }
+            else
+            {   //variables that stores goals
+                numA = single_match.goals_A;
+                numB = single_match.goals_B;
+                total = numA + numB;// sum of goals_a and goals_b
+                if(highest < total)
+                {
+                    highest = total;//if sum of current team goals is highest, then
+                    strcpy(highest_goal.team_A, single_match.team_A);//copy name of team_A to the struct variable  that store highest
+                    strcpy(highest_goal.team_B, single_match.team_B);//copy name of team_B to the struct variable that store highest
+                    highest_goal.goals_A = single_match. goals_A; //copy number  of goals_A to the struct var that store highest
+                    highest_goal.goals_B = single_match. goals_B; //copy number  of goals_B to the struct var that store highest
+                }
+            }
+        }
+        //display on the screen the match with the highest number of goal scored
+        printf("\n  The match with the highest number of goal scored is: \n\n    %s  %s  %d  %d",highest_goal.team_A, highest_goal.team_B, highest_goal.goals_A, highest_goal.goals_B);
+    }
+    else
+    {
+        printf("\n Error in opening binary file to read!!!");
+        exit(1);
+    }  
+    fclose(binary);
+    
+}//end display_highest()
+    
+/*Implement dislay_all(), function that displays all the matches of a  entered team */
+void dislay_all(FILE *binary,struct match single_match)
+{
+    char name[20];
+    int read;
+    int count = 0;
+    
+    if((binary = fopen("matches.bin","rb"))!= NULL)//open binary file to read
+    {   
+        printf("\nPlease enter the name of the team, all matches of which you want to display:\n");
+        gets(name);//reads input(name of team) from the screen
+        
+        printf("________________________________________________________________________________\n");
+        printf("\n\t All matches of the team %s:\n",name);
+        printf("________________________________________________________________________________\n");
+        fseek(binary,0,SEEK_SET);//moving pointer to the start
+        
+        while(feof(binary) == 0)
+        {   //reads single match
+            read = fread(&single_match,sizeof(single_match),1,binary);
+            if(read == 0)
+            {
+                //printf("\n Error in reading matches.bin");
+            }
+            else
+            {   //comparing entered name with team_A
+                if(strcmp(single_match.team_A,name) == 0)//if they are identical, then
+                {   
+                    count++;//count used to count matches and display number of match
+                    //display on the screen
+                    printf("\n %d  %15s %15s    %d  %d",count,single_match.team_A, single_match.team_B, single_match.goals_A, single_match.goals_B);
+                }
+                if(strcmp(single_match.team_B,name) == 0)//comparing entered name with team_B and if they are identical, then
+                {
+                    count++;
+                    //display on the screen
+                    printf("\n %d  %15s %15s    %d  %d",count,single_match.team_A, single_match.team_B, single_match.goals_A, single_match.goals_B);
+                } 
+            }
+        }
+       // printf("No of matches: %d ", count);
+        if(count == 0)//if entered team is not identical with any team name in the file, then
+        {
+            printf("The team %s is not found", name);//display the message that team is not found
+        }
+    }
+    else
+    {
+        fprintf(stderr,"\n Error in opening binary file to read!!!");
+        exit(1);
+    }  
+    fclose(binary);
+    
+}//end  dislay_all() 
+
+/*Implement function that reads the binary file and displays it contents on the screen*/
+void read_bin(FILE *binary, struct match single_match)
+{
+    int check;
+    int i = 0;
+    
+    //open binary file to read
+    if((binary = fopen("matches.bin","rb"))== NULL)
+    {
+        fprintf(stderr,"\n Error in opening binary file to read!!!");
+    }
+    else
+    {
+        while(feof(binary)== 0)
+        {
+            check = fread(&single_match,sizeof(single_match),1,binary);//read binary file
+            if(check == 0)
+            {
+                //printf("\n \nERROR ON READING matches.bin");
+            }
+            else//if no errors, print data on the screen
+            { 
+                i++;
+                printf("%d)%14s %14s %i  %i\t ",i, single_match.team_A, single_match.team_B, single_match.goals_A, single_match.goals_B);
+            } 
+        }
+    }        
+
+    fclose(binary);
+}//end of read_bin()
+
+  /* Implement exit( )  */
+void exit(void)
+{
+   printf("\n\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+   printf("\n\n   Thank you for using our service.\n   Press ENTER to exit the program.\n   Bye! "  );
+   printf("\n\n * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+    
+}//end exit()
