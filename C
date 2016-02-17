@@ -1,0 +1,180 @@
+/* Program that wiil operate on an ATM machine for a bank, and allow bank customers to manage their PIN.
+The Pin is four digit number assigned to 1234.*/
+
+#include<stdio.h>
+#define SIZE 4
+
+main()
+{
+  int option = 0;
+  int current_pin[SIZE] = {1,2,3,4};
+  int pin[SIZE]={0};
+  int new_pin[SIZE]={0};
+  int successful = 0;
+  int incorrect = 0;
+  int i;
+  int correct;
+
+  printf(" \n                WELCOME TO THE ATM SERVICE \n");
+
+  do /// Start of 'do...while' that make program to run continually and re - display the menu while option 4 will be entered
+  {
+    printf("\n");
+    printf("   _____________________________________________________________\n" ); ///BORDERS FOR MENU SCREEN
+    printf("  |                                                             |\n");
+    printf("  |     MENU                                                    |\n");
+    printf("  |                                                             |\n");
+    printf("  |  1.Enter PIN and verify correct                             |\n");
+    printf("  |                                                             |\n");
+    printf("  |  2.Change PIN                                               |\n");
+    printf("  |                                                             |\n");
+    printf("  |  3.Display the number of times the PIN was entered          |\n");
+    printf("  |    (i) Successfully                                         |\n");
+    printf("  |    (ii) Incorrectly                                         |\n");
+    printf("  |                                                             |\n");
+    printf("  |  4.Exit Program                                             |\n");
+    printf("  |                                                             |\n");
+    printf("  |  Please enter 1, 2, 3,or 4                                  |\n");
+    printf("  |                                                             |\n");
+    printf("  |_____________________________________________________________|\n");
+
+    printf("\n   Please Key In Your Option  " );
+    scanf("%d", & option);
+    
+    flushall();
+    
+    if(option > 0 && option <= 4)///error checking for options (checks that input is not a character)
+    {
+        switch(option)///Start of 'swich case' that will switch program from one option to another
+        {
+            case 1: /// when user entered option 1
+            {
+                printf("\n   Please Enter Your Four Digit PIN \n");
+                
+                for(i=0; i<SIZE; i++)///'for loop' for array: pin[i], where i - index, i+1 for numbering digits
+                {
+                    printf("\n   %d", i+1);
+                    printf(" Digit - "); 
+                    scanf("  %d", &pin[i]);
+                }///end of 'for loop'
+                
+                printf("\n   You Entered - ");
+                   
+                for(i=0; i<SIZE; i++)/// 'for loop' that display entered pin
+                {
+                    printf("  %d",pin[i]);
+                }///end of 'for loop'
+                
+                for(i=0; i<SIZE; i++) ///'for loop' for checking if inputed PIN is correct, end if it is correct variable'correct'that is = to 0, will be encreased to 1
+                {
+                    correct =0;
+                    
+                    if( pin[i] == current_pin[i]) ///' if' function that checks that user entered correct PIN
+                    {
+                        correct++;   
+                    }/// end of 'if'  function that checks that user entered correct PIN
+                    
+                }///end of 'for loop' 
+                
+                if ( correct == 1)///if...else function that will display message 'Correct PIN' if variable 'correct'=1; else it will display 'Incorect pin'
+                {
+                    printf(" \n   Correct PIN !!!\n");
+                    successful++;
+                }
+                else
+                {                        
+                    printf("\n   Incorrect PIN \n");
+                    printf("\n   Try Again \n");
+                    incorrect++;
+                }/// end of 'if...else' that will display message
+                   
+                break;
+            } /// end of case 1
+
+            case 2: /// when user entered option 2
+            {
+                printf("\n   Please Enter The New PIN  \n");
+                
+                for(i=0; i<4; i++)///'for loop' for array: pin[i] that will store new pin , where i - index, i+1 for numbering digits
+                {
+                    printf("\n  %d", i+1);
+                    printf(" Digit - ");   
+                    scanf("%d", &pin[i]);
+                } ///end of 'for loop' 
+            
+                    printf("\n   Re-enter The New PIN \n ");
+                    
+                for(i=0; i<4; i++)///'for loop' for array: new_pin[i] that will store reentered new pin , where i - index, i+1 for numbering digits
+                { 
+                    printf("\n  %d", i+1);
+                    printf(" Digit - ");   
+                    scanf("%d", &new_pin[i]);
+                }///end of 'for loop'
+                    
+                for(i=0; i<SIZE; i++) ///'for loop' for checking reentered new PIN = entered new PIN, end if it is correct variable'correct'that is = to 0, will be encreased to 1
+                {
+                    correct =0;
+                    
+                    if( new_pin[i] == pin[i]) ///' if' function that checks that user entered correct PIN
+                    {
+                        correct++;   
+                    }/// end of 'if' that checks that user entered correct PIN
+                    
+                }///end of 'for loop' 
+                
+                if ( correct == 1)///if...else function that will display message 'Verification Successful' if variable 'correct'=1; else it will display 'Verification Failed!!!'
+                {
+                    printf("\n   Verification Successful \n ");
+                    printf("\n   Your PIN Has Been Changed To ");
+                    
+                    for(i=0; i<4; i++)///'for loop' that will display the new(changed) PIN
+                    {
+                        current_pin[i] = new_pin[i];
+                        printf("%d", current_pin[i]);
+                    }///end of 'for loop' 
+                        
+                }
+                else
+                {                        
+                    printf("\n   Verification Failed!!!\n");  
+                }/// end of 'if...else'  function 
+                    
+                break;
+            } /// end of case 2
+
+            case 3: /// when user entered option 3
+            {
+                printf("\n   (i) Successfully Entered PIN - %d times", successful);
+                printf("\n  (ii) Incorrectly  Entered PIN - %d times \n", incorrect);
+                break;
+            }///end of case 3
+            
+            case 4:///case 4 when user entered option 4 for exit
+            {
+                printf("\n   Please Press Enter For Exit \n ");
+                break;
+            }///end of case 4
+
+            default:/// making error checking for options but only for numbers not for characters
+            {
+                printf("\n   Error In Input \n");
+                printf("\n   Please Try Again \n");
+                break;
+            }///end of default
+            
+        }///end switch
+        
+    }///end of 'if....' statement - error checking for options even for characters
+    else
+    {
+        printf("\n   Error In Input \n");
+        printf("\n   Please Try Again \n");
+    } /// end of' ...else' statement - error checking for options
+        
+  }///end do 
+  while(option != 4); /// while user entered option 4 - exit
+ 
+  getchar();
+    
+}/// end main()
+
